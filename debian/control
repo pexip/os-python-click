@@ -1,9 +1,10 @@
 Source: python-click
 Section: python
 Priority: optional
-Maintainer: Sandro Tosi <morph@debian.org>
-Uploaders: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>,
-Build-Depends: debhelper-compat (= 13),
+Maintainer: Pexip AS <packaging@pexip.com>
+XSBC-Pexip-Original-Maintainer: Sandro Tosi <morph@debian.org>
+XSBC-Pexip-Original-Uploaders: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>,
+Build-Depends: debhelper-compat (= 12),
                dh-python,
                python3-all,
                python3-docutils,
@@ -20,6 +21,7 @@ Vcs-Browser: https://salsa.debian.org/python-team/modules/python-click
 Vcs-Git: https://salsa.debian.org/python-team/modules/python-click.git
 Homepage: https://github.com/pallets/click
 Testsuite: autopkgtest-pkg-python
+XS-Pexip-Upstream: http://ftp.debian.org/debian/ bullseye
 
 Package: python3-click
 Architecture: all

@@ -1,3 +1,9 @@
+python-click (7.1.2-1pexip1) pexip; urgency=medium
+
+  * Prepare Pexip packaging
+
+ -- Huw Jones <huw@pexip.com>  Wed, 09 Jun 2021 17:10:04 +0000
+
 python-click (7.1.2-1) unstable; urgency=medium
 
   [ Debian Janitor ]
