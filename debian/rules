@@ -19,4 +19,4 @@ override_dh_sphinxdoc:
 #endif
 
 override_dh_installexamples:
-	dh_installexamples -ppython-click-doc examples/*
+	#dh_installexamples -ppython-click-doc examples/*
