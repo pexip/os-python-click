@@ -17,7 +17,7 @@ Vcs-Browser: https://salsa.debian.org/python-team/modules/python-click
 Vcs-Git: https://salsa.debian.org/python-team/modules/python-click.git
 Homepage: https://github.com/pallets/click
 Testsuite: autopkgtest-pkg-python
-XS-Pexip-Upstream: http://ftp.debian.org/debian/ bullseye
+XS-Pexip-Upstream: http://ftp.debian.org/debian/ bookworm
 
 Package: python3-click
 Architecture: all
