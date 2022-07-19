@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import re
 
 import click
@@ -26,7 +25,7 @@ def test_other_command_forward(runner):
     @cli.command()
     @click.option("--count", default=1)
     def test(count):
-        click.echo("Count: {:d}".format(count))
+        click.echo(f"Count: {count:d}")
 
     @cli.command()
     @click.option("--count", default=1)
@@ -38,6 +37,28 @@ def test_other_command_forward(runner):
     result = runner.invoke(cli, ["dist"])
     assert not result.exception
     assert result.output == "Count: 1\nCount: 42\n"
+
+
+def test_forwarded_params_consistency(runner):
+    cli = click.Group()
+
+    @cli.command()
+    @click.option("-a")
+    @click.pass_context
+    def first(ctx, **kwargs):
+        click.echo(f"{ctx.params}")
+
+    @cli.command()
+    @click.option("-a")
+    @click.option("-b")
+    @click.pass_context
+    def second(ctx, **kwargs):
+        click.echo(f"{ctx.params}")
+        ctx.forward(first)
+
+    result = runner.invoke(cli, ["second", "-a", "foo", "-b", "bar"])
+    assert not result.exception
+    assert result.output == "{'a': 'foo', 'b': 'bar'}\n{'a': 'foo', 'b': 'bar'}\n"
 
 
 def test_auto_shorthelp(runner):
@@ -102,7 +123,7 @@ def test_group_with_args(runner):
     @click.group()
     @click.argument("obj")
     def cli(obj):
-        click.echo("obj={}".format(obj))
+        click.echo(f"obj={obj}")
 
     @cli.command()
     def move():
@@ -134,7 +155,7 @@ def test_base_command(runner):
 
     class OptParseCommand(click.BaseCommand):
         def __init__(self, name, parser, callback):
-            click.BaseCommand.__init__(self, name)
+            super().__init__(name)
             self.parser = parser
             self.callback = callback
 
@@ -211,7 +232,7 @@ def test_object_propagation(runner):
         @cli.command()
         @click.pass_context
         def sync(ctx):
-            click.echo("Debug is {}".format("on" if ctx.obj["DEBUG"] else "off"))
+            click.echo(f"Debug is {'on' if ctx.obj['DEBUG'] else 'off'}")
 
         result = runner.invoke(cli, ["sync"])
         assert result.exception is None
@@ -225,15 +246,17 @@ def test_other_command_invoke_with_defaults(runner):
         return ctx.invoke(other_cmd)
 
     @click.command()
-    @click.option("--foo", type=click.INT, default=42)
+    @click.option("-a", type=click.INT, default=42)
+    @click.option("-b", type=click.INT, default="15")
+    @click.option("-c", multiple=True)
     @click.pass_context
-    def other_cmd(ctx, foo):
-        assert ctx.info_name == "other-cmd"
-        click.echo(foo)
+    def other_cmd(ctx, a, b, c):
+        return ctx.info_name, a, b, c
 
-    result = runner.invoke(cli, [])
-    assert not result.exception
-    assert result.output == "42\n"
+    result = runner.invoke(cli, standalone_mode=False)
+    # invoke should type cast default values, str becomes int, empty
+    # multiple should be empty tuple instead of None
+    assert result.return_value == ("other-cmd", 42, 15, ())
 
 
 def test_invoked_subcommand(runner):
@@ -259,13 +282,43 @@ def test_invoked_subcommand(runner):
     assert result.output == "no subcommand, use default\nin subcommand\n"
 
 
+def test_aliased_command_canonical_name(runner):
+    class AliasedGroup(click.Group):
+        def get_command(self, ctx, cmd_name):
+            return push
+
+        def resolve_command(self, ctx, args):
+            _, command, args = super().resolve_command(ctx, args)
+            return command.name, command, args
+
+    cli = AliasedGroup()
+
+    @cli.command()
+    def push():
+        click.echo("push command")
+
+    result = runner.invoke(cli, ["pu", "--help"])
+    assert not result.exception
+    assert result.output.startswith("Usage: root push [OPTIONS]")
+
+
+def test_group_add_command_name(runner):
+    cli = click.Group("cli")
+    cmd = click.Command("a", params=[click.Option(["-x"], required=True)])
+    cli.add_command(cmd, "b")
+    # Check that the command is accessed through the registered name,
+    # not the original name.
+    result = runner.invoke(cli, ["b"], default_map={"b": {"x": 3}})
+    assert result.exit_code == 0
+
+
 def test_unprocessed_options(runner):
     @click.command(context_settings=dict(ignore_unknown_options=True))
     @click.argument("args", nargs=-1, type=click.UNPROCESSED)
     @click.option("--verbose", "-v", count=True)
     def cli(verbose, args):
-        click.echo("Verbosity: {}".format(verbose))
-        click.echo("Args: {}".format("|".join(args)))
+        click.echo(f"Verbosity: {verbose}")
+        click.echo(f"Args: {'|'.join(args)}")
 
     result = runner.invoke(cli, ["-foo", "-vvvvx", "--muhaha", "x", "y", "-x"])
     assert not result.exception
@@ -282,14 +335,14 @@ def test_deprecated_in_help_messages(runner):
         pass
 
     result = runner.invoke(cmd_with_help, ["--help"])
-    assert "(DEPRECATED)" in result.output
+    assert "(Deprecated)" in result.output
 
     @click.command(deprecated=True)
     def cmd_without_help():
         pass
 
     result = runner.invoke(cmd_without_help, ["--help"])
-    assert "(DEPRECATED)" in result.output
+    assert "(Deprecated)" in result.output
 
 
 def test_deprecated_in_invocation(runner):

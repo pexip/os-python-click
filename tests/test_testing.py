@@ -1,18 +1,12 @@
 import os
 import sys
+from io import BytesIO
 
 import pytest
 
 import click
-from click._compat import PY2
 from click._compat import WIN
 from click.testing import CliRunner
-
-# Use the most reasonable io that users would use for the python version.
-if PY2:
-    from cStringIO import StringIO as ReasonableBytesIO
-else:
-    from io import BytesIO as ReasonableBytesIO
 
 
 def test_runner():
@@ -20,7 +14,7 @@ def test_runner():
     def test():
         i = click.get_binary_stream("stdin")
         o = click.get_binary_stream("stdout")
-        while 1:
+        while True:
             chunk = i.read(4096)
             if not chunk:
                 break
@@ -31,6 +25,19 @@ def test_runner():
     result = runner.invoke(test, input="Hello World!\n")
     assert not result.exception
     assert result.output == "Hello World!\n"
+
+
+def test_echo_stdin_stream():
+    @click.command()
+    def test():
+        i = click.get_binary_stream("stdin")
+        o = click.get_binary_stream("stdout")
+        while True:
+            chunk = i.read(4096)
+            if not chunk:
+                break
+            o.write(chunk)
+            o.flush()
 
     runner = CliRunner(echo_stdin=True)
     result = runner.invoke(test, input="Hello World!\n")
@@ -38,12 +45,52 @@ def test_runner():
     assert result.output == "Hello World!\nHello World!\n"
 
 
+def test_echo_stdin_prompts():
+    @click.command()
+    def test_python_input():
+        foo = input("Foo: ")
+        click.echo(f"foo={foo}")
+
+    runner = CliRunner(echo_stdin=True)
+    result = runner.invoke(test_python_input, input="bar bar\n")
+    assert not result.exception
+    assert result.output == "Foo: bar bar\nfoo=bar bar\n"
+
+    @click.command()
+    @click.option("--foo", prompt=True)
+    def test_prompt(foo):
+        click.echo(f"foo={foo}")
+
+    result = runner.invoke(test_prompt, input="bar bar\n")
+    assert not result.exception
+    assert result.output == "Foo: bar bar\nfoo=bar bar\n"
+
+    @click.command()
+    @click.option("--foo", prompt=True, hide_input=True)
+    def test_hidden_prompt(foo):
+        click.echo(f"foo={foo}")
+
+    result = runner.invoke(test_hidden_prompt, input="bar bar\n")
+    assert not result.exception
+    assert result.output == "Foo: \nfoo=bar bar\n"
+
+    @click.command()
+    @click.option("--foo", prompt=True)
+    @click.option("--bar", prompt=True)
+    def test_multiple_prompts(foo, bar):
+        click.echo(f"foo={foo}, bar={bar}")
+
+    result = runner.invoke(test_multiple_prompts, input="one\ntwo\n")
+    assert not result.exception
+    assert result.output == "Foo: one\nBar: two\nfoo=one, bar=two\n"
+
+
 def test_runner_with_stream():
     @click.command()
     def test():
         i = click.get_binary_stream("stdin")
         o = click.get_binary_stream("stdout")
-        while 1:
+        while True:
             chunk = i.read(4096)
             if not chunk:
                 break
@@ -51,12 +98,12 @@ def test_runner_with_stream():
             o.flush()
 
     runner = CliRunner()
-    result = runner.invoke(test, input=ReasonableBytesIO(b"Hello World!\n"))
+    result = runner.invoke(test, input=BytesIO(b"Hello World!\n"))
     assert not result.exception
     assert result.output == "Hello World!\n"
 
     runner = CliRunner(echo_stdin=True)
-    result = runner.invoke(test, input=ReasonableBytesIO(b"Hello World!\n"))
+    result = runner.invoke(test, input=BytesIO(b"Hello World!\n"))
     assert not result.exception
     assert result.output == "Hello World!\nHello World!\n"
 
@@ -65,7 +112,7 @@ def test_prompts():
     @click.command()
     @click.option("--foo", prompt=True)
     def test(foo):
-        click.echo("foo={}".format(foo))
+        click.echo(f"foo={foo}")
 
     runner = CliRunner()
     result = runner.invoke(test, input="wau wau\n")
@@ -75,7 +122,7 @@ def test_prompts():
     @click.command()
     @click.option("--foo", prompt=True, hide_input=True)
     def test(foo):
-        click.echo("foo={}".format(foo))
+        click.echo(f"foo={foo}")
 
     runner = CliRunner()
     result = runner.invoke(test, input="wau wau\n")
@@ -92,6 +139,25 @@ def test_getchar():
     result = runner.invoke(continue_it, input="y")
     assert not result.exception
     assert result.output == "y\n"
+
+    runner = CliRunner(echo_stdin=True)
+    result = runner.invoke(continue_it, input="y")
+    assert not result.exception
+    assert result.output == "y\n"
+
+    @click.command()
+    def getchar_echo():
+        click.echo(click.getchar(echo=True))
+
+    runner = CliRunner()
+    result = runner.invoke(getchar_echo, input="y")
+    assert not result.exception
+    assert result.output == "yy\n"
+
+    runner = CliRunner(echo_stdin=True)
+    result = runner.invoke(getchar_echo, input="y")
+    assert not result.exception
+    assert result.output == "yy\n"
 
 
 def test_catch_exceptions():
@@ -131,7 +197,7 @@ def test_with_color():
     assert not result.exception
 
     result = runner.invoke(cli, color=True)
-    assert result.output == "{}\n".format(click.style("hello world", fg="blue"))
+    assert result.output == f"{click.style('hello world', fg='blue')}\n"
     assert not result.exception
 
 
@@ -219,7 +285,7 @@ def test_exit_code_and_output_from_sys_exit():
 def test_env():
     @click.command()
     def cli_env():
-        click.echo("ENV={}".format(os.environ["TEST_CLICK_ENV"]))
+        click.echo(f"ENV={os.environ['TEST_CLICK_ENV']}")
 
     runner = CliRunner()
 
@@ -301,3 +367,54 @@ def test_setting_prog_name_in_extra():
     result = runner.invoke(cli, prog_name="foobar")
     assert not result.exception
     assert result.output == "ok\n"
+
+
+def test_command_standalone_mode_returns_value():
+    @click.command()
+    def cli():
+        click.echo("ok")
+        return "Hello, World!"
+
+    runner = CliRunner()
+    result = runner.invoke(cli, standalone_mode=False)
+    assert result.output == "ok\n"
+    assert result.return_value == "Hello, World!"
+    assert result.exit_code == 0
+
+
+def test_file_stdin_attrs(runner):
+    @click.command()
+    @click.argument("f", type=click.File())
+    def cli(f):
+        click.echo(f.name)
+        click.echo(f.mode, nl=False)
+
+    result = runner.invoke(cli, ["-"])
+    assert result.output == "<stdin>\nr"
+
+
+def test_isolated_runner(runner):
+    with runner.isolated_filesystem() as d:
+        assert os.path.exists(d)
+
+    assert not os.path.exists(d)
+
+
+def test_isolated_runner_custom_tempdir(runner, tmp_path):
+    with runner.isolated_filesystem(temp_dir=tmp_path) as d:
+        assert os.path.exists(d)
+
+    assert os.path.exists(d)
+    os.rmdir(d)
+
+
+def test_isolation_stderr_errors():
+    """Writing to stderr should escape invalid characters instead of
+    raising a UnicodeEncodeError.
+    """
+    runner = CliRunner(mix_stderr=False)
+
+    with runner.isolation() as (_, err):
+        click.echo("\udce2", err=True, nl=False)
+
+    assert err.getvalue() == b"\\udce2"
