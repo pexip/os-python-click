@@ -1,26 +1,23 @@
 Source: python-click
 Section: python
 Priority: optional
-Maintainer: Sandro Tosi <morph@debian.org>
-Uploaders: Debian Python Team <team+python@tracker.debian.org>,
+Maintainer: Pexip AS <packaging@pexip.com>
+XSBC-Pexip-Original-Maintainer: Sandro Tosi <morph@debian.org>
+XSBC-Pexip-Original-Uploaders: Debian Python Team <team+python@tracker.debian.org>,
 Build-Depends: debhelper-compat (= 13),
                dh-python,
                python3-all,
                python3-colorama,
                python3-docutils,
-               python3-pallets-sphinx-themes (>= 2.0.1) <!nodoc>,
                python3-pytest <!nocheck>,
                python3-requests,
                python3-setuptools,
-               python3-sphinx <!nodoc>,
-               python3-sphinx-issues <!nodoc>,
-               python3-sphinx-tabs <!nodoc>,
-               python3-sphinxcontrib-log-cabinet <!nodoc>,
 Standards-Version: 4.6.0.1
 Vcs-Browser: https://salsa.debian.org/python-team/packages/python-click
 Vcs-Git: https://salsa.debian.org/python-team/packages/python-click.git
 Homepage: https://github.com/pallets/click
 Testsuite: autopkgtest-pkg-python
+XS-Pexip-Upstream: http://ftp.debian.org/debian/ bookworm
 
 Package: python3-click
 Architecture: all
@@ -39,21 +36,3 @@ Description: Wrapper around optparse for command line utilities - Python 3.x
  an intended CLI API.
  .
  This is the Python 3 compatible package.
-
-Package: python-click-doc
-Section: doc
-Architecture: all
-Depends: ${misc:Depends},
-         ${sphinxdoc:Depends},
-Multi-Arch: foreign
-Description: Wrapper around optparse for command line utilities - documentation
- Click is a Python package for creating beautiful command line interfaces
- in a composable way with as little code as necessary.  It's the "Command
- Line Interface Creation Kit".  It's highly configurable but comes with
- sensible defaults out of the box.
- .
- It aims to make the process of writing command line tools quick and fun
- while also preventing any frustration caused by the inability to implement
- an intended CLI API.
- .
- This package contains the documentation for Click.

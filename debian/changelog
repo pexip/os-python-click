@@ -1,3 +1,10 @@
+python-click (8.0.3-1pexip1) pexip-bullseye; urgency=medium
+
+  * Backport bookworm version.
+  * Don't build -doc package to avoid needing to backport sphinx.
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Tue, 19 Jul 2022 20:23:09 +0100
+
 python-click (8.0.3-1) unstable; urgency=medium
 
   * New upstream release
