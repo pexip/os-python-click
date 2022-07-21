@@ -1,0 +1,10 @@
+--- a/setup.py
++++ b/setup.py
+@@ -3,7 +3,6 @@
+ setup(
+     name="click",
+     install_requires=[
+-        "colorama; platform_system == 'Windows'",
+         "importlib-metadata; python_version < '3.8'",
+     ],
+ )

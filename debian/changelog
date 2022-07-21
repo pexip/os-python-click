@@ -1,3 +1,9 @@
+python-click (8.0.3-1pexip2) pexip-bullseye; urgency=medium
+
+  * Remove unnecessary colorama dep.
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Thu, 21 Jul 2022 10:31:35 +0100
+
 python-click (8.0.3-1pexip1) pexip-bullseye; urgency=medium
 
   * Backport bookworm version.
