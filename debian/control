@@ -2,23 +2,26 @@ Source: python-click
 Section: python
 Priority: optional
 Maintainer: Sandro Tosi <morph@debian.org>
-Uploaders: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>,
+Uploaders: Debian Python Team <team+python@tracker.debian.org>,
 Build-Depends: debhelper-compat (= 13),
-               dh-python,
+               dh-sequence-python3,
                python3-all,
+               python3-doc <!nodoc>,
+               python3-colorama,
                python3-docutils,
-               python3-pallets-sphinx-themes,
+               python3-pallets-sphinx-themes (>= 2.0.1) <!nodoc>,
+               python3-pytest <!nocheck>,
+               python3-requests,
                python3-setuptools,
-               python3-sphinx,
+               python3-sphinx <!nodoc>,
                python3-sphinx-issues <!nodoc>,
+               python3-sphinx-tabs <!nodoc>,
                python3-sphinxcontrib-log-cabinet <!nodoc>,
-Build-Depends-Indep: python3-colorama,
-                     python3-pytest,
-                     python3-requests,
-Standards-Version: 4.5.0
-Vcs-Browser: https://salsa.debian.org/python-team/modules/python-click
-Vcs-Git: https://salsa.debian.org/python-team/modules/python-click.git
+Standards-Version: 4.6.2.0
+Vcs-Browser: https://salsa.debian.org/python-team/packages/python-click
+Vcs-Git: https://salsa.debian.org/python-team/packages/python-click.git
 Homepage: https://github.com/pallets/click
+Rules-Requires-Root: no
 Testsuite: autopkgtest-pkg-python
 
 Package: python3-click
@@ -26,6 +29,7 @@ Architecture: all
 Depends: python3-colorama,
          ${misc:Depends},
          ${python3:Depends},
+Breaks: python3-click-threading (<< 0.5.0),
 Description: Wrapper around optparse for command line utilities - Python 3.x
  Click is a Python package for creating beautiful command line interfaces
  in a composable way with as little code as necessary.  It's the "Command
@@ -43,6 +47,7 @@ Section: doc
 Architecture: all
 Depends: ${misc:Depends},
          ${sphinxdoc:Depends},
+Multi-Arch: foreign
 Description: Wrapper around optparse for command line utilities - documentation
  Click is a Python package for creating beautiful command line interfaces
  in a composable way with as little code as necessary.  It's the "Command
