@@ -18,16 +18,15 @@ export PYBUILD_TEST_ARGS=-k 'not test_expand_args' {dir}/tests/
 export SOURCE = $(CURDIR)/debian/
 
 %:
-	dh $@ --with sphinxdoc --buildsystem=pybuild
+	dh $@ --buildsystem=pybuild
 
 override_dh_sphinxdoc:
-ifeq (,$(findstring nodoc, $(DEB_BUILD_OPTIONS)))
-	PYTHONPATH=src/ python3 -m sphinx -b html $(SPHINXOPTS) docs/ debian/python-click-doc/usr/share/doc/python-click-doc/html/
-	dh_sphinxdoc
-endif
+# ifeq (,$(findstring nodoc, $(DEB_BUILD_OPTIONS)))
+# 	PYTHONPATH=src/ python3 -m sphinx -b html $(SPHINXOPTS) docs/ debian/python-click-doc/usr/share/doc/python-click-doc/html/
+# 	dh_sphinxdoc
+# endif
 
 override_dh_installexamples:
-	dh_installexamples -ppython-click-doc examples/*
 
 override_dh_fixperms:
 	dh_fixperms
