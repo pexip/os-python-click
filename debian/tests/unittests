@@ -1,0 +1,18 @@
+#!/bin/sh
+set -efu
+
+pys="$(py3versions -s 2> /dev/null)"
+
+cp -a setup.cfg tests "$AUTOPKGTEST_TMP"
+
+# needed by `test_expand_args`
+mkdir $AUTOPKGTEST_TMP/docs
+cp -a docs/conf.py $AUTOPKGTEST_TMP/docs
+cp -a setup.cfg "$AUTOPKGTEST_TMP"
+
+cd "$AUTOPKGTEST_TMP"
+
+for py in $pys; do
+  echo "=== $py ==="
+  $py -m pytest tests 2>&1
+done

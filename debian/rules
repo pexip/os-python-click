@@ -1,4 +1,12 @@
 #!/usr/bin/make -f
+# -*- makefile -*-
+
+#export DH_VERBOSE=1
+
+include /usr/share/dpkg/pkg-info.mk
+
+BUILD_DATE  = $(shell LC_ALL=C date -u "+%d %B %Y" -d "@$(SOURCE_DATE_EPOCH)")
+SPHINXOPTS := -E -N -D html_last_updated_fmt="$(BUILD_DATE)"
 
 export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
@@ -10,13 +18,17 @@ export PYBUILD_TEST_ARGS=-k 'not test_expand_args' {dir}/tests/
 export SOURCE = $(CURDIR)/debian/
 
 %:
-	dh $@ --with python3 --buildsystem=pybuild
+	dh $@ --with sphinxdoc --buildsystem=pybuild
 
 override_dh_sphinxdoc:
-#ifeq (,$(findstring nodoc, $(DEB_BUILD_OPTIONS)))
-#	http_proxy='http://127.0.0.1:9/' PYTHONPATH=src/ python3 -m sphinx -N -E -b html docs/ debian/python-click-doc/usr/share/doc/python-click-doc/html/
-#	dh_sphinxdoc
-#endif
+ifeq (,$(findstring nodoc, $(DEB_BUILD_OPTIONS)))
+	PYTHONPATH=src/ python3 -m sphinx -b html $(SPHINXOPTS) docs/ debian/python-click-doc/usr/share/doc/python-click-doc/html/
+	dh_sphinxdoc
+endif
 
 override_dh_installexamples:
-	#dh_installexamples -ppython-click-doc examples/*
+	dh_installexamples -ppython-click-doc examples/*
+
+override_dh_fixperms:
+	dh_fixperms
+	rm -f debian/python-click-doc/usr/share/doc/python-click-doc/examples/imagepipe/.gitignore
