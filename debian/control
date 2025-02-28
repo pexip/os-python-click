@@ -1,36 +1,40 @@
 Source: python-click
 Section: python
 Priority: optional
-Maintainer: Sandro Tosi <morph@debian.org>
-Uploaders: Debian Python Team <team+python@tracker.debian.org>,
-Build-Depends: debhelper-compat (= 13),
-               dh-sequence-python3,
-               python3-all,
-               python3-doc <!nodoc>,
-               python3-colorama,
-               python3-docutils,
-               python3-pallets-sphinx-themes (>= 2.0.1) <!nodoc>,
-               python3-pytest <!nocheck>,
-               python3-requests,
-               python3-setuptools,
-               python3-sphinx <!nodoc>,
-               python3-sphinx-issues <!nodoc>,
-               python3-sphinx-tabs <!nodoc>,
-               python3-sphinxcontrib-log-cabinet <!nodoc>,
-Standards-Version: 4.6.2.0
+Maintainer: Debian Python Team <team+python@tracker.debian.org>
+Uploaders:
+ Peter Pentchev <roam@debian.org>,
+Build-Depends:
+ debhelper (>> 13.15.2~),
+ dh-sequence-python3,
+ dh-sequence-sphinxdoc <!nodoc>,
+ dpkg-build-api (= 1),
+ flit,
+ pybuild-plugin-pyproject,
+ python3-all,
+ python3-doc <!nodoc>,
+ python3-pallets-sphinx-themes (>= 2.0.1) <!nodoc>,
+ python3-pytest <!nocheck>,
+ python3-requests,
+ python3-sphinx <!nodoc>,
+ python3-sphinx-issues <!nodoc>,
+ python3-sphinx-tabs <!nodoc>,
+ python3-sphinxcontrib-log-cabinet <!nodoc>,
+X-DH-Compat: 14
+Standards-Version: 4.7.2
 Vcs-Browser: https://salsa.debian.org/python-team/packages/python-click
 Vcs-Git: https://salsa.debian.org/python-team/packages/python-click.git
 Homepage: https://github.com/pallets/click
-Rules-Requires-Root: no
 Testsuite: autopkgtest-pkg-python
+X-Style: black
 
 Package: python3-click
 Architecture: all
-Depends: python3-colorama,
-         ${misc:Depends},
-         ${python3:Depends},
-Breaks: python3-click-threading (<< 0.5.0),
-Description: Wrapper around optparse for command line utilities - Python 3.x
+Depends:
+ ${python3:Depends},
+Breaks:
+ python3-click-threading (<< 0.5.0),
+Description: Command-Line Interface Creation Kit - Python 3.x
  Click is a Python package for creating beautiful command line interfaces
  in a composable way with as little code as necessary.  It's the "Command
  Line Interface Creation Kit".  It's highly configurable but comes with
@@ -45,10 +49,10 @@ Description: Wrapper around optparse for command line utilities - Python 3.x
 Package: python-click-doc
 Section: doc
 Architecture: all
-Depends: ${misc:Depends},
-         ${sphinxdoc:Depends},
+Depends:
+ ${sphinxdoc:Depends},
 Multi-Arch: foreign
-Description: Wrapper around optparse for command line utilities - documentation
+Description: Command-Line Interface Creation Kit - documentation
  Click is a Python package for creating beautiful command line interfaces
  in a composable way with as little code as necessary.  It's the "Command
  Line Interface Creation Kit".  It's highly configurable but comes with

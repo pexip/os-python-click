@@ -68,12 +68,14 @@ usage patterns.
 
    why
    quickstart
+   virtualenv
    setuptools
    parameters
    options
    arguments
    commands
    prompts
+   handling-files
    documentation
    complex
    advanced

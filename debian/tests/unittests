@@ -3,12 +3,12 @@ set -efu
 
 pys="$(py3versions -s 2> /dev/null)"
 
-cp -a setup.cfg tests "$AUTOPKGTEST_TMP"
+cp -a pyproject.toml tests "$AUTOPKGTEST_TMP"
 
 # needed by `test_expand_args`
 mkdir $AUTOPKGTEST_TMP/docs
 cp -a docs/conf.py $AUTOPKGTEST_TMP/docs
-cp -a setup.cfg "$AUTOPKGTEST_TMP"
+cp -a pyproject.toml "$AUTOPKGTEST_TMP"
 
 cd "$AUTOPKGTEST_TMP"
 

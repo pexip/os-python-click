@@ -3,13 +3,15 @@
 
 #export DH_VERBOSE=1
 
-include /usr/share/dpkg/pkg-info.mk
+include /usr/share/dpkg/default.mk
 
 BUILD_DATE  = $(shell LC_ALL=C date -u "+%d %B %Y" -d "@$(SOURCE_DATE_EPOCH)")
 SPHINXOPTS := -E -N -D html_last_updated_fmt="$(BUILD_DATE)"
 
 export LC_ALL=C.UTF-8
 export LANG=C.UTF-8
+
+export DEB_VERSION_UPSTREAM  # used by patched docs/conf.py
 
 export PYBUILD_NAME=click
 export PYBUILD_TEST_PYTEST=1
@@ -18,17 +20,13 @@ export PYBUILD_TEST_ARGS=-k 'not test_expand_args' {dir}/tests/
 export SOURCE = $(CURDIR)/debian/
 
 %:
-	dh $@ --with sphinxdoc --buildsystem=pybuild
+	dh $@ --buildsystem=pybuild
 
-override_dh_sphinxdoc:
-ifeq (,$(findstring nodoc, $(DEB_BUILD_OPTIONS)))
+execute_before_dh_sphinxdoc:
 	PYTHONPATH=src/ python3 -m sphinx -b html $(SPHINXOPTS) docs/ debian/python-click-doc/usr/share/doc/python-click-doc/html/
-	dh_sphinxdoc
-endif
 
 override_dh_installexamples:
 	dh_installexamples -ppython-click-doc examples/*
 
-override_dh_fixperms:
-	dh_fixperms
+execute_after_dh_fixperms:
 	rm -f debian/python-click-doc/usr/share/doc/python-click-doc/examples/imagepipe/.gitignore
