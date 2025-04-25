@@ -3,117 +3,28 @@ Quickstart
 
 .. currentmodule:: click
 
-You can get the library directly from PyPI::
+Install
+----------------------
+Install from PyPI::
 
     pip install click
 
-The installation into a :ref:`virtualenv` is heavily recommended.
+Installing into a virtual environment is highly recommended. We suggest :ref:`virtualenv-heading`.
 
-.. _virtualenv:
-
-virtualenv
-----------
-
-Virtualenv is probably what you want to use for developing Click
-applications.
-
-What problem does virtualenv solve?  Chances are that you want to use it
-for other projects besides your Click script.  But the more projects you
-have, the more likely it is that you will be working with different
-versions of Python itself, or at least different versions of Python
-libraries.  Let's face it: quite often libraries break backwards
-compatibility, and it's unlikely that any serious application will have
-zero dependencies.  So what do you do if two or more of your projects have
-conflicting dependencies?
-
-Virtualenv to the rescue!  Virtualenv enables multiple side-by-side
-installations of Python, one for each project.  It doesn't actually
-install separate copies of Python, but it does provide a clever way to
-keep different project environments isolated.  Let's see how virtualenv
-works.
-
-If you are on Mac OS X or Linux::
-
-    $ pip install virtualenv --user
-
-One of these will probably install virtualenv on your system.  Maybe it's even
-in your package manager.  If you use Ubuntu, try::
-
-    $ sudo apt-get install python-virtualenv
-
-If you are on Windows (or none of the above methods worked) you must install
-``pip`` first.  For more information about this, see `installing pip`_.
-Once you have it installed, run the ``pip`` command from above, but without
-the `sudo` prefix.
-
-.. _installing pip: https://pip.readthedocs.io/en/latest/installing/
-
-Once you have virtualenv installed, just fire up a shell and create
-your own environment.  I usually create a project folder and a `venv`
-folder within::
-
-    $ mkdir myproject
-    $ cd myproject
-    $ virtualenv venv
-    New python executable in venv/bin/python
-    Installing setuptools, pip............done.
-
-Now, whenever you want to work on a project, you only have to activate the
-corresponding environment.  On OS X and Linux, do the following::
-
-    $ . venv/bin/activate
-
-If you are a Windows user, the following command is for you::
-
-    $ venv\scripts\activate
-
-Either way, you should now be using your virtualenv (notice how the prompt of
-your shell has changed to show the active environment).
-
-And if you want to go back to the real world, use the following command::
-
-    $ deactivate
-
-After doing this, the prompt of your shell should be as familiar as before.
-
-Now, let's move on. Enter the following command to get Click activated in your
-virtualenv::
-
-    $ pip install click
-
-A few seconds later and you are good to go.
-
-Screencast and Examples
+Examples
 -----------------------
 
-There is a screencast available which shows the basic API of Click and
-how to build simple applications with it.  It also explores how to build
-commands with subcommands.
+Some standalone examples of Click applications are packaged with Click. They are available in the `examples folder <https://github.com/pallets/click/tree/main/examples>`_ of the repo.
 
-*   `Building Command Line Applications with Click
-    <https://www.youtube.com/watch?v=kNke39OZ2k0>`_
-
-Examples of Click applications can be found in the documentation as well
-as in the GitHub repository together with readme files:
-
-*   ``inout``: `File input and output
-    <https://github.com/pallets/click/tree/main/examples/inout>`_
-*   ``naval``: `Port of docopt naval example
-    <https://github.com/pallets/click/tree/main/examples/naval>`_
-*   ``aliases``: `Command alias example
-    <https://github.com/pallets/click/tree/main/examples/aliases>`_
-*   ``repo``: `Git-/Mercurial-like command line interface
-    <https://github.com/pallets/click/tree/main/examples/repo>`_
-*   ``complex``: `Complex example with plugin loading
-    <https://github.com/pallets/click/tree/main/examples/complex>`_
-*   ``validation``: `Custom parameter validation example
-    <https://github.com/pallets/click/tree/main/examples/validation>`_
-*   ``colors``: `Color support demo
-    <https://github.com/pallets/click/tree/main/examples/colors>`_
-*   ``termui``: `Terminal UI functions demo
-    <https://github.com/pallets/click/tree/main/examples/termui>`_
-*   ``imagepipe``: `Multi command chaining demo
-    <https://github.com/pallets/click/tree/main/examples/imagepipe>`_
+*   `inout <https://github.com/pallets/click/tree/main/examples/inout>`_ : A very simple example of an application that can read from files and write to files and also accept input from stdin or write to stdout.
+*   `validation <https://github.com/pallets/click/tree/main/examples/validation>`_ : A simple example of an application that performs custom validation of parameters in different ways.
+*   `naval <https://github.com/pallets/click/tree/main/examples/naval>`_ : Port of the `docopt <http://docopt.org/>`_ naval example.
+*   `colors <https://github.com/pallets/click/tree/main/examples/colors>`_ : A simple example that colorizes text. Uses colorama on Windows.
+*   `aliases <https://github.com/pallets/click/tree/main/examples/aliases>`_ : An advanced example that implements :ref:`aliases`.
+*   `imagepipe <https://github.com/pallets/click/tree/main/examples/imagepipe>`_ : A complex example that implements some :ref:`multi-command-chaining` . It chains together image processing instructions. Requires pillow.
+*   `repo <https://github.com/pallets/click/tree/main/examples/repo>`_ : An advanced example that implements a Git-/Mercurial-like command line interface.
+*   `complex <https://github.com/pallets/click/tree/main/examples/complex>`_ : A very advanced example that implements loading subcommands dynamically from a plugin folder.
+*   `termui <https://github.com/pallets/click/tree/main/examples/termui>`_ : A simple example that showcases terminal UI helpers provided by click.
 
 Basic Concepts - Creating a Command
 -----------------------------------
