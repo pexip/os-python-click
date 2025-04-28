@@ -1,0 +1,10 @@
+# We use X-DH-Compat: 14
+#
+python-click source: debhelper-compat-file-is-missing
+python-click source: package-uses-deprecated-debhelper-compat-version 1
+
+# The "default" dependencies are added automatically by debhelper
+# in compat level 14.
+#
+python-click source: debhelper-but-no-misc-depends python3-click
+python-click source: debhelper-but-no-misc-depends python-click-doc

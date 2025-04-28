@@ -16,6 +16,7 @@ License: BSD-3-clause
 Files: debian/*
 Copyright: 2014 Alexandre Viau <alexandre@alexandreviau.net>
  Copyright (C) 2019-2023 Sandro Tosi <morph@debian.org>
+ Copyright (C) 2024, 2025 Peter Pentchev <roam@debian.org>
 License: BSD-3-clause
 
 License: BSD-3-clause
